@@ -85,7 +85,18 @@ function Pengatur() {
     themebg: {
       backgroundColor: '#673ab7',
       color: 'white'
-    }
+    },
+    rowRoot: {
+      '&$selectedShade': {
+        backgroundColor: '#dacfed',
+        '&:hover': {
+          backgroundColor: '#f0ebf7'
+        }
+      },
+    },
+    selectedShade: {
+      // backgroundColor: '#673ab7',
+    },
   }));
 
   const [valueNama, setValueNama] = React.useState('');
@@ -95,10 +106,6 @@ function Pengatur() {
   const [tables, setTables] = React.useState({});
   const [selectedQueuer, setSelectedQueuer] = React.useState(null);
   const [selectedTables, setSelectedTables] = React.useState({});
-
-  function c(string) {
-    console.log(string);
-  }
 
   const classes = useStyles();
 
@@ -325,7 +332,6 @@ function Pengatur() {
   function handleConfirmClick(status) {
     let data = { status: status, meja: Object.values(selectedTables) };
     if (status) {
-      c(data);
       helper.setTablesStatus(data).then(() => {
         helper.deleteQueuer(selectedQueuer).then(() => {
           helper.getAllQueuer().then((resQueuer) => {
@@ -462,7 +468,9 @@ function Pengatur() {
                         return (
                           <TableRow
                             key={row.id}
+                            classes={{ root: classes.rowRoot, selected: classes.selectedShade}}
                             hover
+                            selected={(selectedQueuer === row.id)}
                             onClick={(e) => { handleRowClick(e, row.id) }}>
                             <TableCell>{row.id}</TableCell>
                             <TableCell>{row.namawakil}</TableCell>

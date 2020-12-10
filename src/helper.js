@@ -2,7 +2,6 @@ import Axios from 'axios';
 
 const server = 'http://localhost:5000';
 
-
 function createQueuer(data) {
 	return Axios.post(server + '/pengantri', data);
 }

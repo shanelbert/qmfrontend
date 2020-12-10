@@ -247,7 +247,7 @@ function Pelapor() {
       <Grid container item>
         {/* Peta Status Meja */}
         <Grid container item justify='center'>
-          <Paper style={{ padding: '0 8px 0 8px', overflow: 'auto' }}>
+          <Paper style={{ padding: '0 8px 0 8px', overflow: 'auto'}}>
             {/* Judul */}
             <Grid container item justify='center' style={{ margin: '8px 0 8px 0', width: '600px' }}>
               <Typography variant='h4'>Peta Status Meja</Typography>
@@ -335,7 +335,7 @@ function Pelapor() {
         </Grid>
 
         {/* Tombol Konfirmasi dan Pesan */}
-        <Grid container item justify='center' style={{ marginTop: '16px' }} >
+        <Grid container item justify='center' style={{ marginTop: '16px', height: "125px"}} >
           <Paper style={{ display: 'flex', alignContent: 'center' }}>
 
             {(isObjEmpty(selectedTables)) ? (
