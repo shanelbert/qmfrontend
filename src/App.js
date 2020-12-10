@@ -2,7 +2,7 @@ import {
   BrowserRouter as Router,
   Switch,
   Route
-} from "react-router-dom";
+} from 'react-router-dom';
 import React from 'react';
 import Pengatur from './Pengatur';
 import Pelapor from './Pelapor';

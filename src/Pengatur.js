@@ -21,7 +21,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
-import MuiAlert from "@material-ui/lab/Alert";
+import MuiAlert from '@material-ui/lab/Alert';
 
 import CheckIcon from '@material-ui/icons/Check';
 import RemoveIcon from '@material-ui/icons/Remove';
@@ -29,22 +29,22 @@ import HelpIcon from '@material-ui/icons/Help';
 
 function Pengatur() {
   let base = 8;
-  let short = base * 4 + "px";
-  let long = base * 8 + "px";
+  let short = base * 4 + 'px';
+  let long = base * 8 + 'px';
 
   const useStyles = makeStyles((theme) => ({
     table: {
-      minWidth: "unset",
+      minWidth: 'unset',
     },
     table1seat: {
       width: short,
       height: short
     },
     table1seatEmpty: {
-      backgroundColor: "#049F90",
-      color: "white",
+      backgroundColor: '#049F90',
+      color: 'white',
       '&$disabled': {
-        backgroundColor: "#049F90"
+        backgroundColor: '#049F90'
       }
     },
     table2seatVertical: {
@@ -56,10 +56,10 @@ function Pengatur() {
       height: short
     },
     table2seatEmpty: {
-      backgroundColor: "#FD7D2E",
-      color: "white",
+      backgroundColor: '#FD7D2E',
+      color: 'white',
       '&$disabled': {
-        backgroundColor: "#FD7D2E"
+        backgroundColor: '#FD7D2E'
       }
     },
     table4seat: {
@@ -67,29 +67,29 @@ function Pengatur() {
       height: long
     },
     table4seatEmpty: {
-      backgroundColor: "#B2417C",
-      color: "white",
+      backgroundColor: '#B2417C',
+      color: 'white',
       '&$disabled': {
-        backgroundColor: "#B2417C"
+        backgroundColor: '#B2417C'
       }
     },
     disabled: {
       //(meskipun kosong, ini harus ditambahkan)
     },
     fab: {
-      position: "fixed",
-      right: "3vw",
-      bottom: "3vh",
+      position: 'fixed',
+      right: '3vw',
+      bottom: '3vh',
       zIndex: 1
     },
     themebg: {
-      backgroundColor: "#673ab7",
+      backgroundColor: '#673ab7',
       color: 'white'
     }
   }));
 
-  const [valueNama, setValueNama] = React.useState("");
-  const [valueJumlah, setValueJumlah] = React.useState("");
+  const [valueNama, setValueNama] = React.useState('');
+  const [valueJumlah, setValueJumlah] = React.useState('');
 
   const [rows, setRows] = React.useState([]);
   const [tables, setTables] = React.useState({});
@@ -162,8 +162,8 @@ function Pengatur() {
 
     return (
       <Button
-        randomvalue="random"
-        variant="contained"
+        randomvalue='random'
+        variant='contained'
         disableTouchRipple
         disabled={disabled}
         classes={{ root: className, disabled: classes.disabled }}
@@ -209,8 +209,8 @@ function Pengatur() {
 
   }, []);
 
-  const [snackbarContent, setSnackbarContent] = React.useState("");
-  const [severity, setSeverity] = React.useState("info");
+  const [snackbarContent, setSnackbarContent] = React.useState('');
+  const [severity, setSeverity] = React.useState('info');
   const [openSnackbar, setOpenSnackbar] = React.useState(false);
 
   function handleOpenSnackbar(severity, content) {
@@ -250,7 +250,7 @@ function Pengatur() {
         });
         setRows(resQueuer.data);
         setTables(alltable);
-        handleOpenSnackbar("success", "Daftar pengantri dan peta status meja berhasil diperbarui");
+        handleOpenSnackbar('success', 'Daftar pengantri dan peta status meja berhasil diperbarui');
 
       }).catch(() => {
         handleOpenSnackbar('error', 'Gagal memuat isi tabel meja');
@@ -264,8 +264,8 @@ function Pengatur() {
 
   function validateDataPengantri() {
     let test = [
-      (valueNama !== ""),
-      (valueJumlah !== ""),
+      (valueNama !== ''),
+      (valueJumlah !== ''),
 
       (!isNaN(Number(valueJumlah))),
       (Number.isInteger(Number(valueJumlah))),
@@ -338,7 +338,7 @@ function Pengatur() {
               setTables(alltable);
               setSelectedQueuer(null);
               setSelectedTables({});
-              handleOpenSnackbar("success", "Status meja berhasil diubah");
+              handleOpenSnackbar('success', 'Status meja berhasil diubah');
             }).catch(() => {
               handleOpenSnackbar('error', 'Gagal memuat isi tabel meja');
             });
@@ -360,7 +360,7 @@ function Pengatur() {
           });
           setTables(alltable);
           setSelectedTables({});
-          handleOpenSnackbar("success", "Status meja berhasil diubah");
+          handleOpenSnackbar('success', 'Status meja berhasil diubah');
         }).catch(() => {
           handleOpenSnackbar('error', 'Gagal memuat isi tabel meja');
         });
@@ -370,29 +370,29 @@ function Pengatur() {
     }
   }
   return (
-    // <div className="App">
-    //   <header className="App-header">
-    //     <img src={logo} className="App-logo" alt="logo" />
+    // <div className='App'>
+    //   <header className='App-header'>
+    //     <img src={logo} className='App-logo' alt='logo' />
     //     <p>
     //       Edit <code>src/App.js</code> and save to reload.
     //     </p>
     //     <a
-    //       className="App-link"
-    //       href="https://reactjs.org"
-    //       target="_blank"
-    //       rel="noopener noreferrer"
+    //       className='App-link'
+    //       href='https://reactjs.org'
+    //       target='_blank'
+    //       rel='noopener noreferrer'
     //     >
     //       Learn React
     //     </a>
     //   </header>
     // </div>
-    <Grid container style={{ background: "#f5f5f5", minHeight: "100vh" }}>
+    <Grid container style={{ background: '#f5f5f5', minHeight: '100vh' }}>
       <Snackbar open={openSnackbar} autoHideDuration={2500} onClose={(event, reason) => { handleCloseSnackbar(event, reason) }}>
-        <MuiAlert variant="filled" icon={false} severity={severity} onClose={(event, reason) => { handleCloseSnackbar(event, reason) }}>
+        <MuiAlert variant='filled' icon={false} severity={severity} onClose={(event, reason) => { handleCloseSnackbar(event, reason) }}>
           {snackbarContent}
         </MuiAlert>
       </Snackbar>
-      <Fab color="primary" size="medium" className={classes.fab} onClick={handleOpenDialog}>
+      <Fab color='primary' size='medium' className={classes.fab} onClick={handleOpenDialog}>
         <HelpIcon />
       </Fab>
       <Dialog open={openDialog} onClose={handleCloseDialog} disableScrollLock={true}>
@@ -401,7 +401,7 @@ function Pengatur() {
             <b>
               Untuk menempatkan pengantri ke meja,
             </b>
-            <ul style={{ marginBottom: "0" }}>
+            <ul style={{ marginBottom: '0' }}>
               <li>
                 Klik baris pada daftar pengantri
               </li>
@@ -429,20 +429,20 @@ function Pengatur() {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog} color="primary">
+          <Button onClick={handleCloseDialog} color='primary'>
             Tutup
           </Button>
         </DialogActions>
       </Dialog>
       {/* Bagian tidak fixed (untuk tabel) */}
-      <Grid container item justify="center" style={{ margin: "16px 0 16px 0" }} >
+      <Grid container item justify='center' style={{ margin: '16px 0 16px 0' }} >
         {/* Daftar Pengantri */}
-        <Grid container item xs="5" style={{ paddingRight: "24px", zIndex: "1" }}>
-          <Paper style={{ padding: "0 24px 24px 24px" }}>
-            <Grid container item direction="column" alignContent="center">
+        <Grid container item xs='5' style={{ paddingRight: '24px', zIndex: '1' }}>
+          <Paper style={{ padding: '0 24px 24px 24px' }}>
+            <Grid container item direction='column' alignContent='center'>
               {/* Judul */}
-              <Grid container item justify="center" style={{ margin: "8px 0 8px 0" }}>
-                <Typography variant="h4">Daftar Pengantri</Typography>
+              <Grid container item justify='center' style={{ margin: '8px 0 8px 0' }}>
+                <Typography variant='h4'>Daftar Pengantri</Typography>
               </Grid>
 
               {/* Tabel */}
@@ -451,10 +451,10 @@ function Pengatur() {
                   <Table>
                     <TableHead>
                       <TableRow className={classes.themebg} >
-                        <TableCell style={{ color: "inherit" }}>ID</TableCell>
-                        <TableCell style={{ color: "inherit" }}>Nama Perwakilan</TableCell>
-                        <TableCell style={{ color: "inherit" }}>Jumlah Orang</TableCell>
-                        <TableCell style={{ color: "inherit" }}>Waktu Mulai Mengatri</TableCell>
+                        <TableCell style={{ color: 'inherit' }}>ID</TableCell>
+                        <TableCell style={{ color: 'inherit' }}>Nama Perwakilan</TableCell>
+                        <TableCell style={{ color: 'inherit' }}>Jumlah Orang</TableCell>
+                        <TableCell style={{ color: 'inherit' }}>Waktu Mulai Mengatri</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -480,91 +480,91 @@ function Pengatur() {
         </Grid>
 
         {/* Daerah kosong (ini akan tertutupi oleh peta dan form) */}
-        <Grid container item xs="5" style={{ zIndex: "0" }} />
+        <Grid container item xs='5' style={{ zIndex: '0' }} />
       </Grid>
 
       {/* Bagian fixed (untuk peta dan form) */}
-      <Grid container item justify="center" style={{ padding: "16px 0 16px 0", position: "fixed", height: "100vh" }}>
+      <Grid container item justify='center' style={{ padding: '16px 0 16px 0', position: 'fixed', height: '100vh' }}>
         {/* Daerah kosong (ini akan tertutupi oleh tabel) */}
-        <Grid container item xs="5" style={{ zIndex: "0" }} />
+        <Grid container item xs='5' style={{ zIndex: '0' }} />
 
         {/* Peta dan Form */}
-        <Grid container item xs="5" alignContent="space-between" style={{ zIndex: "1" }}>
+        <Grid container item xs='5' alignContent='space-between' style={{ zIndex: '1' }}>
           {/* Peta Status Meja */}
           <Grid container item>
-            <Paper style={{ padding: "0 8px 0 8px" }}>
+            <Paper style={{ padding: '0 8px 0 8px' }}>
               {/* Judul */}
-              <Grid container item justify="center" style={{ margin: "8px 0 8px 0" }}>
-                <Typography variant="h4">Peta Status Meja</Typography>
+              <Grid container item justify='center' style={{ margin: '8px 0 8px 0' }}>
+                <Typography variant='h4'>Peta Status Meja</Typography>
               </Grid>
 
-              <Grid container item direction="column" alignContent="center">
+              <Grid container item direction='column' alignContent='center'>
                 {/* Peta */}
                 <Grid container item>
                   {/* Kiri atas */}
-                  <Grid container item xs="3" direction="column" justify="space-between" >
+                  <Grid container item xs='3' direction='column' justify='space-between' >
                     {/* Baris 1 */}
-                    <Grid container justify="space-between" >
-                      <TableButton id="1" capacity="2" orientation="vertical" />
-                      <TableButton id="2" capacity="2" orientation="vertical" />
-                      <TableButton id="3" capacity="2" orientation="vertical" />
+                    <Grid container justify='space-between' >
+                      <TableButton id='1' capacity='2' orientation='vertical' />
+                      <TableButton id='2' capacity='2' orientation='vertical' />
+                      <TableButton id='3' capacity='2' orientation='vertical' />
                     </Grid>
 
                     {/* Baris 2 */}
-                    <Grid container justify="space-between" style={{ marginTop: "32px" }}>
-                      <TableButton id="4" capacity="2" orientation="vertical" />
-                      <TableButton id="5" capacity="2" orientation="vertical" />
-                      <TableButton id="6" capacity="2" orientation="vertical" />
+                    <Grid container justify='space-between' style={{ marginTop: '32px' }}>
+                      <TableButton id='4' capacity='2' orientation='vertical' />
+                      <TableButton id='5' capacity='2' orientation='vertical' />
+                      <TableButton id='6' capacity='2' orientation='vertical' />
                     </Grid>
                   </Grid>
 
                   {/* Kanan atas */}
-                  <Grid container item xs="9" direction="column" justify="space-between" style={{ paddingLeft: "32px" }}>
+                  <Grid container item xs='9' direction='column' justify='space-between' style={{ paddingLeft: '32px' }}>
                     {/* Baris 1 */}
-                    <Grid container item justify="space-between" >
-                      <TableButton id="1" capacity="1" />
-                      <TableButton id="2" capacity="1" />
-                      <TableButton id="3" capacity="1" />
-                      <TableButton id="4" capacity="1" />
-                      <TableButton id="5" capacity="1" />
-                      <TableButton id="6" capacity="1" />
+                    <Grid container item justify='space-between' >
+                      <TableButton id='1' capacity='1' />
+                      <TableButton id='2' capacity='1' />
+                      <TableButton id='3' capacity='1' />
+                      <TableButton id='4' capacity='1' />
+                      <TableButton id='5' capacity='1' />
+                      <TableButton id='6' capacity='1' />
                     </Grid>
 
                     {/* Baris 2 */}
-                    <Grid container item justify="space-between" >
-                      <TableButton id="7" capacity="2" orientation="horizontal" />
-                      <TableButton id="8" capacity="2" orientation="horizontal" />
-                      <TableButton id="9" capacity="2" orientation="horizontal" />
-                      <TableButton id="10" capacity="2" orientation="horizontal" />
+                    <Grid container item justify='space-between' >
+                      <TableButton id='7' capacity='2' orientation='horizontal' />
+                      <TableButton id='8' capacity='2' orientation='horizontal' />
+                      <TableButton id='9' capacity='2' orientation='horizontal' />
+                      <TableButton id='10' capacity='2' orientation='horizontal' />
                     </Grid>
 
                     {/* Baris 3 */}
-                    <Grid container item justify="space-between" >
-                      <TableButton id="1" capacity="4" />
-                      <TableButton id="2" capacity="4" />
-                      <TableButton id="3" capacity="4" />
-                      <TableButton id="4" capacity="4" />
+                    <Grid container item justify='space-between' >
+                      <TableButton id='1' capacity='4' />
+                      <TableButton id='2' capacity='4' />
+                      <TableButton id='3' capacity='4' />
+                      <TableButton id='4' capacity='4' />
                     </Grid>
                   </Grid>
 
                   {/* Bawah */}
-                  <Grid container item xs="12" justify="space-between" style={{ marginTop: "32px" }}>
-                    <TableButton id="5" capacity="4" />
-                    <TableButton id="6" capacity="4" />
-                    <TableButton id="7" capacity="4" />
-                    <TableButton id="8" capacity="4" />
-                    <TableButton id="9" capacity="4" />
-                    <TableButton id="10" capacity="4" />
+                  <Grid container item xs='12' justify='space-between' style={{ marginTop: '32px' }}>
+                    <TableButton id='5' capacity='4' />
+                    <TableButton id='6' capacity='4' />
+                    <TableButton id='7' capacity='4' />
+                    <TableButton id='8' capacity='4' />
+                    <TableButton id='9' capacity='4' />
+                    <TableButton id='10' capacity='4' />
                   </Grid>
                 </Grid>
 
                 {/* Tombol-tombol */}
-                <Grid container item justify="space-between" style={{ margin: "24px 0 8px 0" }}>
+                <Grid container item justify='space-between' style={{ margin: '24px 0 8px 0' }}>
 
                   <Grid item>
                     {(!selectedQueuer && isObjEmpty(selectedTables)) ? (
                       <Button
-                        variant="contained"
+                        variant='contained'
                         className={classes.themebg}
                         onClick={handleSync}
                       >
@@ -578,15 +578,15 @@ function Pengatur() {
                   {(selectedQueuer) ? (
                     <Grid item>
                       <Button
-                        variant="contained"
+                        variant='contained'
                         className={classes.themebg}
-                        style={{ marginRight: "16px" }}
+                        style={{ marginRight: '16px' }}
                         onClick={handleCancelClick}
                       >
                         Batal
                       </Button>
                       <Button
-                        variant="contained"
+                        variant='contained'
                         className={classes.themebg}
                         onClick={() => { handleConfirmClick(true) }}
                       >
@@ -597,15 +597,15 @@ function Pengatur() {
                       (!isObjEmpty(selectedTables)) ? (
                         <Grid item>
                           <Button
-                            variant="contained"
+                            variant='contained'
                             className={classes.themebg}
-                            style={{ marginRight: "16px" }}
+                            style={{ marginRight: '16px' }}
                             onClick={handleCancelClick}
                           >
                             Batal
                       </Button>
                           <Button
-                            variant="contained"
+                            variant='contained'
                             className={classes.themebg}
                             onClick={() => { handleConfirmClick(false) }}
                           >
@@ -625,36 +625,36 @@ function Pengatur() {
           {/* Tambah Pengantri */}
           <Grid container item>
             <Paper>
-              <Grid container item justify="center">
-                <Grid item xs="3" />
+              <Grid container item justify='center'>
+                <Grid item xs='3' />
 
                 {/* Form */}
-                <Grid container item xs="6">
-                  <Grid container item justify="center" style={{ margin: "8px 0 8px 0" }}>
+                <Grid container item xs='6'>
+                  <Grid container item justify='center' style={{ margin: '8px 0 8px 0' }}>
                     <Grid item >
-                      <Typography variant="h6">Tambah Pengantri</Typography>
+                      <Typography variant='h6'>Tambah Pengantri</Typography>
                     </Grid>
                   </Grid>
 
-                  <Grid container item justify="center" >
-                    <Grid item justify="center">
+                  <Grid container item justify='center' >
+                    <Grid item justify='center'>
                       <TextField
-                        variant="outlined"
-                        label="Nama Perwakilan"
-                        size="small"
+                        variant='outlined'
+                        label='Nama Perwakilan'
+                        size='small'
                         value={valueNama}
                         onChange={(e) => { setValueNama(e.target.value) }}
                       />
                     </Grid>
                   </Grid>
 
-                  <Grid container item justify="center" >
+                  <Grid container item justify='center' >
                     <Grid item>
                       <TextField
-                        variant="outlined"
-                        label="Jumlah Orang"
-                        size="small"
-                        style={{ margin: "24px 0 16px 0" }}
+                        variant='outlined'
+                        label='Jumlah Orang'
+                        size='small'
+                        style={{ margin: '24px 0 16px 0' }}
                         value={valueJumlah}
                         onChange={(e) => { setValueJumlah(e.target.value) }}
                       />
@@ -663,10 +663,10 @@ function Pengatur() {
                 </Grid>
 
                 {/* Tombol submit */}
-                <Grid container item alignContent="flex-end" xs="3" style={{ margin: "0 0 16px 0" }}>
+                <Grid container item alignContent='flex-end' xs='3' style={{ margin: '0 0 16px 0' }}>
                   <Grid item>
                     <Button
-                      variant="contained"
+                      variant='contained'
                       className={classes.themebg}
                       onClick={() => { handleSubmit() }}
                     >
