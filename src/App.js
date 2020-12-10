@@ -1,5 +1,3 @@
-// import logo from './logo.svg';
-import './App.css';
 import {
   BrowserRouter as Router,
   Switch,
@@ -13,15 +11,14 @@ function App() {
   return (
     <Router>
       <Switch>
-        <Route path='/a'>
+        <Route path='/pengatur'>
           <Pengatur />
         </Route>
-        <Route path='/o'>
+        <Route path='/pelapor'>
           <Pelapor />
         </Route>
       </Switch>
     </Router>
-
   )
 }
 

@@ -1,11 +1,16 @@
 import React from 'react';
-import {
-  makeStyles, Button, Grid, Paper, Typography, FormControl, InputLabel,
-  Snackbar, Hidden} from '@material-ui/core';
-// import Paper from '@material-ui/core/Paper';
 import * as helper from './helper';
+
+import { makeStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import Snackbar from '@material-ui/core/Snackbar';
+import Hidden from '@material-ui/core/Hidden';
+
 import MuiAlert from "@material-ui/lab/Alert";
-import CheckIcon from '@material-ui/icons/Check';
+
 import RemoveIcon from '@material-ui/icons/Remove';
 
 
@@ -137,13 +142,9 @@ function Pelapor() {
 
       >
         {(selectedTables[tableCode]) ? (
-          (tables[capacity][id]) ? (
-            <RemoveIcon />
-          ) : (
-              <CheckIcon />
-            )
+          <RemoveIcon />
         ) : (
-            tableCode
+          tableCode
         )}
       </Button>
     );
