@@ -1,15 +1,14 @@
 import React from 'react';
 import * as helper from './helper';
+import Forbidden from './Forbidden';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
-import Fab from '@material-ui/core/Fab';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
-import Snackbar from '@material-ui/core/Snackbar';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -20,12 +19,17 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import SpeedDial from '@material-ui/lab/SpeedDial';
+import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
+import Snackbar from '@material-ui/core/Snackbar';
 
 import MuiAlert from '@material-ui/lab/Alert';
 
 import CheckIcon from '@material-ui/icons/Check';
 import RemoveIcon from '@material-ui/icons/Remove';
 import HelpIcon from '@material-ui/icons/Help';
+import AddIcon from '@material-ui/icons/Add';
+import HomeIcon from '@material-ui/icons/Home';
 
 function Pengatur() {
   let base = 8;
@@ -95,7 +99,6 @@ function Pengatur() {
       },
     },
     selectedShade: {
-      // backgroundColor: '#673ab7',
     },
   }));
 
@@ -191,29 +194,44 @@ function Pengatur() {
   }
 
   const allTableTemplate = React.useRef({});
+  const [load, setLoad] = React.useState(false);
+  const [openForbidden, setOpenForbidden] = React.useState(false);
+  const role = React.useRef();
+
   React.useEffect(() => {
-    helper.getAllQueuer().then((res) => {
-      setRows(res.data);
+    helper.checkAuth().then((response) => {
+      if (response.data === 'pengatur') {
+        helper.getAllQueuer().then((res) => {
+          setRows(res.data);
+        }).catch((err) => {
+          console.log(err);
+        });
+
+        helper.getAllTable().then((res) => {
+          let capacityRange = new Set();
+          res.data.forEach((meja) => {
+            capacityRange.add(meja.kapasitas);
+          });
+
+          let alltable = {}
+          capacityRange.forEach((cap) => {
+            alltable[cap] = {};
+          });
+          allTableTemplate.current = { ...alltable };
+
+          res.data.forEach((meja) => {
+            alltable[meja.kapasitas][meja.id] = meja.status;
+          });
+          setTables(alltable);
+        });
+      } else {
+        role.current = response.data;
+        setOpenForbidden(true);
+      }
+      setLoad(true);
+    }).catch((err) => {
+      window.location.replace('./');
     });
-
-    helper.getAllTable().then((res) => {
-      let capacityRange = new Set();
-      res.data.forEach((meja) => {
-        capacityRange.add(meja.kapasitas);
-      });
-
-      let alltable = {}
-      capacityRange.forEach((cap) => {
-        alltable[cap] = {};
-      });
-      allTableTemplate.current = { ...alltable };
-
-      res.data.forEach((meja) => {
-        alltable[meja.kapasitas][meja.id] = meja.status;
-      });
-      setTables(alltable);
-    });
-
   }, []);
 
   const [snackbarContent, setSnackbarContent] = React.useState('');
@@ -246,7 +264,6 @@ function Pengatur() {
   function handleCloseDialog() {
     setOpenDialog(false);
   };
-
 
   function handleSync() {
     helper.getAllQueuer().then((resQueuer) => {
@@ -375,319 +392,348 @@ function Pengatur() {
       });
     }
   }
+
+
+  const [openSpeedDial, setOpenSpeedDial] = React.useState(false);
+  const actions = [
+    { icon: <HelpIcon />, name: 'Bantuan', handler: handleOpenDialog },
+    { icon: <HomeIcon />, name: 'Beranda', handler: handleHome }
+  ];
+
+  function handleClose() {
+    setOpenSpeedDial(false);
+  };
+
+  function handleOpen() {
+    setOpenSpeedDial(true);
+  };
+
+  function handleHome() {
+    window.location.replace('./');
+  };
+
+
   return (
-    // <div className='App'>
-    //   <header className='App-header'>
-    //     <img src={logo} className='App-logo' alt='logo' />
-    //     <p>
-    //       Edit <code>src/App.js</code> and save to reload.
-    //     </p>
-    //     <a
-    //       className='App-link'
-    //       href='https://reactjs.org'
-    //       target='_blank'
-    //       rel='noopener noreferrer'
-    //     >
-    //       Learn React
-    //     </a>
-    //   </header>
-    // </div>
-    <Grid container style={{ background: '#f5f5f5', minHeight: '100vh' }}>
-      <Snackbar open={openSnackbar} autoHideDuration={2500} onClose={(event, reason) => { handleCloseSnackbar(event, reason) }}>
-        <MuiAlert variant='filled' icon={false} severity={severity} onClose={(event, reason) => { handleCloseSnackbar(event, reason) }}>
-          {snackbarContent}
-        </MuiAlert>
-      </Snackbar>
-      <Fab color='primary' size='medium' className={classes.fab} onClick={handleOpenDialog}>
-        <HelpIcon />
-      </Fab>
-      <Dialog open={openDialog} onClose={handleCloseDialog} disableScrollLock={true}>
-        <DialogContent>
-          <DialogContentText>
-            <b>
-              Untuk menempatkan pengantri ke meja,
-            </b>
-            <ul style={{ marginBottom: '0' }}>
-              <li>
-                Klik baris pada daftar pengantri
-              </li>
-              <li>
-                Klik tombol meja berwarna (bisa lebih dari 1)
-              </li>
-              <li>
-                Klik tombol ubah
-              </li>
-            </ul>
-            <br />
-            <Divider />
-            <br />
-            <b>
-              Untuk mengubah status meja menjadi kosong,
-            </b>
-            <ul>
-              <li>
-                Klik tombol meja abu-abu (bisa lebih dari 1)
-              </li>
-              <li>
-                Klik tombol ubah
-              </li>
-            </ul>
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog} color='primary'>
-            Tutup
-          </Button>
-        </DialogActions>
-      </Dialog>
-      {/* Bagian tidak fixed (untuk tabel) */}
-      <Grid container item justify='center' style={{ margin: '16px 0 16px 0' }} >
-        {/* Daftar Pengantri */}
-        <Grid container item xs='5' style={{ paddingRight: '24px', zIndex: '1' }}>
-          <Paper style={{ padding: '0 24px 24px 24px' }}>
-            <Grid container item direction='column' alignContent='center'>
-              {/* Judul */}
-              <Grid container item justify='center' style={{ margin: '8px 0 8px 0' }}>
-                <Typography variant='h4'>Daftar Pengantri</Typography>
+    <div>
+      {(load) ? (
+        (openForbidden) ? (
+          <Forbidden role={role.current} />
+        ) : (
+            <Grid container style={{ background: '#f5f5f5', minHeight: '100vh' }}>
+
+              <Snackbar open={openSnackbar} autoHideDuration={2500} onClose={(event, reason) => { handleCloseSnackbar(event, reason) }}>
+                <MuiAlert variant='filled' icon={false} severity={severity} onClose={(event, reason) => { handleCloseSnackbar(event, reason) }}>
+                  {snackbarContent}
+                </MuiAlert>
+              </Snackbar>
+
+              <SpeedDial
+                ariaLabel='SpeedDial'
+                className={classes.fab}
+                icon={<AddIcon />}
+                onClose={handleClose}
+                onOpen={handleOpen}
+                open={openSpeedDial}
+                direction='up'
+                style={{ position: 'fixed' }}
+              >
+                {actions.map((action) => (
+                  <SpeedDialAction
+                    key={action.name}
+                    icon={action.icon}
+                    tooltipTitle={action.name}
+                    onClick={action.handler}
+                  />
+                ))}
+              </SpeedDial>
+
+              <Dialog open={openDialog} onClose={handleCloseDialog} disableScrollLock={true}>
+                <DialogContent>
+                  <DialogContentText>
+                    <b>Untuk menempatkan pengantri ke meja,</b>
+                    <ul style={{ marginBottom: '0' }}>
+                      <li>Klik baris pada daftar pengantri</li>
+                      <li>Klik tombol meja berwarna (bisa lebih dari 1)</li>
+                      <li>Klik tombol ubah</li>
+                    </ul>
+                    <br />
+                    <Divider />
+                    <br />
+                    <b>Untuk mengubah status meja menjadi kosong,</b>
+                    <ul style={{ marginBottom: '0' }}>
+                      <li>Klik tombol meja abu-abu (bisa lebih dari 1)</li>
+                      <li>Klik tombol ubah</li>
+                    </ul>
+                    <br />
+                    <Divider />
+                    <br />
+                    <b>Kapasitas meja untuk setiap kode:</b>
+                    <ul>
+                      <li>A: 4 orang</li>
+                      <li>B: 2 orang</li>
+                      <li>C: 1 orang</li>
+                    </ul>
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={handleCloseDialog} color='primary'>Tutup</Button>
+                </DialogActions>
+              </Dialog>
+
+              {/* Bagian tidak fixed (untuk tabel) */}
+              <Grid container item justify='center' style={{ margin: '16px 0 16px 0' }} >
+                {/* Daftar Pengantri */}
+                <Grid container item xs='5' style={{ paddingRight: '24px', zIndex: '1' }}>
+                  <Paper style={{ padding: '0 24px 24px 24px' }}>
+                    <Grid container item direction='column' alignContent='center'>
+                      {/* Judul */}
+                      <Grid container item justify='center' style={{ margin: '8px 0 8px 0' }}>
+                        <Typography variant='h4'>Daftar Pengantri</Typography>
+                      </Grid>
+
+                      {/* Tabel */}
+                      <Grid item>
+                        <TableContainer component={Paper}>
+                          <Table>
+                            <TableHead>
+                              <TableRow className={classes.themebg} >
+                                <TableCell style={{ color: 'inherit' }}>ID</TableCell>
+                                <TableCell style={{ color: 'inherit' }}>Nama Perwakilan</TableCell>
+                                <TableCell style={{ color: 'inherit' }}>Jumlah Orang</TableCell>
+                                <TableCell style={{ color: 'inherit' }}>Waktu Mulai Mengatri</TableCell>
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
+                              {rows.map((row) => {
+                                return (
+                                  <TableRow
+                                    key={row.id}
+                                    classes={{ root: classes.rowRoot, selected: classes.selectedShade }}
+                                    hover
+                                    selected={(selectedQueuer === row.id)}
+                                    onClick={(e) => { handleRowClick(e, row.id) }}
+                                  >
+                                    <TableCell>{row.id}</TableCell>
+                                    <TableCell>{row.namawakil}</TableCell>
+                                    <TableCell>{row.jumlah}</TableCell>
+                                    <TableCell>{row.waktumulai}</TableCell>
+                                  </TableRow>
+                                )
+                              })}
+                            </TableBody>
+                          </Table>
+                        </TableContainer>
+                      </Grid>
+                    </Grid>
+                  </Paper>
+                </Grid>
+
+                {/* Daerah kosong (ini akan tertutupi oleh peta dan form) */}
+                <Grid container item xs='5' style={{ zIndex: '0' }} />
               </Grid>
 
-              {/* Tabel */}
-              <Grid item>
-                <TableContainer component={Paper}>
-                  <Table>
-                    <TableHead>
-                      <TableRow className={classes.themebg} >
-                        <TableCell style={{ color: 'inherit' }}>ID</TableCell>
-                        <TableCell style={{ color: 'inherit' }}>Nama Perwakilan</TableCell>
-                        <TableCell style={{ color: 'inherit' }}>Jumlah Orang</TableCell>
-                        <TableCell style={{ color: 'inherit' }}>Waktu Mulai Mengatri</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {rows.map((row) => {
-                        return (
-                          <TableRow
-                            key={row.id}
-                            classes={{ root: classes.rowRoot, selected: classes.selectedShade}}
-                            hover
-                            selected={(selectedQueuer === row.id)}
-                            onClick={(e) => { handleRowClick(e, row.id) }}>
-                            <TableCell>{row.id}</TableCell>
-                            <TableCell>{row.namawakil}</TableCell>
-                            <TableCell>{row.jumlah}</TableCell>
-                            <TableCell>{row.waktumulai}</TableCell>
-                          </TableRow>
-                        )
-                      })}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
+              {/* Bagian fixed (untuk peta dan form) */}
+              <Grid container item justify='center' style={{ padding: '16px 0 16px 0', position: 'fixed', height: '100vh' }}>
+                {/* Daerah kosong (ini akan tertutupi oleh tabel) */}
+                <Grid container item xs='5' style={{ zIndex: '0' }} />
+
+                {/* Peta dan Form */}
+                <Grid container item xs='5' alignContent='space-between' style={{ zIndex: '1' }}>
+                  {/* Peta Status Meja */}
+                  <Grid container item>
+                    <Paper style={{ padding: '0 8px 0 8px' }}>
+                      {/* Judul */}
+                      <Grid container item justify='center' style={{ margin: '8px 0 8px 0' }}>
+                        <Typography variant='h4'>Peta Status Meja</Typography>
+                      </Grid>
+
+                      <Grid container item direction='column' alignContent='center'>
+                        {/* Peta */}
+                        <Grid container item>
+                          {/* Kiri atas */}
+                          <Grid container item xs='3' direction='column' justify='space-between' >
+                            {/* Baris 1 */}
+                            <Grid container justify='space-between' >
+                              <TableButton id='1' capacity='2' orientation='vertical' />
+                              <TableButton id='2' capacity='2' orientation='vertical' />
+                              <TableButton id='3' capacity='2' orientation='vertical' />
+                            </Grid>
+
+                            {/* Baris 2 */}
+                            <Grid container justify='space-between' style={{ marginTop: '32px' }}>
+                              <TableButton id='4' capacity='2' orientation='vertical' />
+                              <TableButton id='5' capacity='2' orientation='vertical' />
+                              <TableButton id='6' capacity='2' orientation='vertical' />
+                            </Grid>
+                          </Grid>
+
+                          {/* Kanan atas */}
+                          <Grid container item xs='9' direction='column' justify='space-between' style={{ paddingLeft: '32px' }}>
+                            {/* Baris 1 */}
+                            <Grid container item justify='space-between' >
+                              <TableButton id='1' capacity='1' />
+                              <TableButton id='2' capacity='1' />
+                              <TableButton id='3' capacity='1' />
+                              <TableButton id='4' capacity='1' />
+                              <TableButton id='5' capacity='1' />
+                              <TableButton id='6' capacity='1' />
+                            </Grid>
+
+                            {/* Baris 2 */}
+                            <Grid container item justify='space-between' >
+                              <TableButton id='7' capacity='2' orientation='horizontal' />
+                              <TableButton id='8' capacity='2' orientation='horizontal' />
+                              <TableButton id='9' capacity='2' orientation='horizontal' />
+                              <TableButton id='10' capacity='2' orientation='horizontal' />
+                            </Grid>
+
+                            {/* Baris 3 */}
+                            <Grid container item justify='space-between' >
+                              <TableButton id='1' capacity='4' />
+                              <TableButton id='2' capacity='4' />
+                              <TableButton id='3' capacity='4' />
+                              <TableButton id='4' capacity='4' />
+                            </Grid>
+                          </Grid>
+
+                          {/* Bawah */}
+                          <Grid container item xs='12' justify='space-between' style={{ marginTop: '32px' }}>
+                            <TableButton id='5' capacity='4' />
+                            <TableButton id='6' capacity='4' />
+                            <TableButton id='7' capacity='4' />
+                            <TableButton id='8' capacity='4' />
+                            <TableButton id='9' capacity='4' />
+                            <TableButton id='10' capacity='4' />
+                          </Grid>
+                        </Grid>
+
+                        {/* Tombol-tombol */}
+                        <Grid container item justify='space-between' style={{ margin: '24px 0 8px 0' }}>
+
+                          <Grid item>
+                            {(!selectedQueuer && isObjEmpty(selectedTables)) ? (
+                              <Button
+                                variant='contained'
+                                className={classes.themebg}
+                                onClick={handleSync}
+                              >
+                                Reload
+                              </Button>
+                            ) : (
+                                null
+                              )
+                            }
+                          </Grid>
+                          {(selectedQueuer) ? (
+                            <Grid item>
+                              <Button
+                                variant='contained'
+                                className={classes.themebg}
+                                style={{ marginRight: '16px' }}
+                                onClick={handleCancelClick}
+                              >
+                                Batal
+                            </Button>
+                              <Button
+                                variant='contained'
+                                className={classes.themebg}
+                                onClick={() => { handleConfirmClick(true) }}
+                              >
+                                Ubah
+                            </Button>
+                            </Grid>
+                          ) : (
+                              (!isObjEmpty(selectedTables)) ? (
+                                <Grid item>
+                                  <Button
+                                    variant='contained'
+                                    className={classes.themebg}
+                                    style={{ marginRight: '16px' }}
+                                    onClick={handleCancelClick}
+                                  >
+                                    Batal
+                                </Button>
+                                  <Button
+                                    variant='contained'
+                                    className={classes.themebg}
+                                    onClick={() => { handleConfirmClick(false) }}
+                                  >
+                                    Ubah
+                                </Button>
+                                </Grid>
+                              ) : (
+                                  null
+                                )
+                            )
+                          }
+                        </Grid>
+                      </Grid>
+                    </Paper>
+                  </Grid>
+
+                  {/* Tambah Pengantri */}
+                  <Grid container item>
+                    <Paper>
+                      <Grid container item justify='center'>
+                        <Grid item xs='3' />
+
+                        {/* Form */}
+                        <Grid container item xs='6'>
+                          <Grid container item justify='center' style={{ margin: '8px 0 8px 0' }}>
+                            <Grid item >
+                              <Typography variant='h6'>Tambah Pengantri</Typography>
+                            </Grid>
+                          </Grid>
+
+                          <Grid container item justify='center' >
+                            <Grid item justify='center'>
+                              <TextField
+                                variant='outlined'
+                                label='Nama Perwakilan'
+                                size='small'
+                                value={valueNama}
+                                onChange={(e) => { setValueNama(e.target.value) }}
+                              />
+                            </Grid>
+                          </Grid>
+
+                          <Grid container item justify='center' >
+                            <Grid item>
+                              <TextField
+                                variant='outlined'
+                                label='Jumlah Orang'
+                                size='small'
+                                style={{ margin: '24px 0 16px 0' }}
+                                value={valueJumlah}
+                                onChange={(e) => { setValueJumlah(e.target.value) }}
+                              />
+                            </Grid>
+                          </Grid>
+                        </Grid>
+
+                        {/* Tombol submit */}
+                        <Grid container item alignContent='flex-end' xs='3' style={{ margin: '0 0 16px 0' }}>
+                          <Grid item>
+                            <Button
+                              variant='contained'
+                              className={classes.themebg}
+                              onClick={() => { handleSubmit() }}
+                            >
+                              Tambah
+                          </Button>
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                    </Paper>
+                  </Grid>
+                </Grid>
               </Grid>
             </Grid>
-          </Paper>
-        </Grid>
-
-        {/* Daerah kosong (ini akan tertutupi oleh peta dan form) */}
-        <Grid container item xs='5' style={{ zIndex: '0' }} />
-      </Grid>
-
-      {/* Bagian fixed (untuk peta dan form) */}
-      <Grid container item justify='center' style={{ padding: '16px 0 16px 0', position: 'fixed', height: '100vh' }}>
-        {/* Daerah kosong (ini akan tertutupi oleh tabel) */}
-        <Grid container item xs='5' style={{ zIndex: '0' }} />
-
-        {/* Peta dan Form */}
-        <Grid container item xs='5' alignContent='space-between' style={{ zIndex: '1' }}>
-          {/* Peta Status Meja */}
-          <Grid container item>
-            <Paper style={{ padding: '0 8px 0 8px' }}>
-              {/* Judul */}
-              <Grid container item justify='center' style={{ margin: '8px 0 8px 0' }}>
-                <Typography variant='h4'>Peta Status Meja</Typography>
-              </Grid>
-
-              <Grid container item direction='column' alignContent='center'>
-                {/* Peta */}
-                <Grid container item>
-                  {/* Kiri atas */}
-                  <Grid container item xs='3' direction='column' justify='space-between' >
-                    {/* Baris 1 */}
-                    <Grid container justify='space-between' >
-                      <TableButton id='1' capacity='2' orientation='vertical' />
-                      <TableButton id='2' capacity='2' orientation='vertical' />
-                      <TableButton id='3' capacity='2' orientation='vertical' />
-                    </Grid>
-
-                    {/* Baris 2 */}
-                    <Grid container justify='space-between' style={{ marginTop: '32px' }}>
-                      <TableButton id='4' capacity='2' orientation='vertical' />
-                      <TableButton id='5' capacity='2' orientation='vertical' />
-                      <TableButton id='6' capacity='2' orientation='vertical' />
-                    </Grid>
-                  </Grid>
-
-                  {/* Kanan atas */}
-                  <Grid container item xs='9' direction='column' justify='space-between' style={{ paddingLeft: '32px' }}>
-                    {/* Baris 1 */}
-                    <Grid container item justify='space-between' >
-                      <TableButton id='1' capacity='1' />
-                      <TableButton id='2' capacity='1' />
-                      <TableButton id='3' capacity='1' />
-                      <TableButton id='4' capacity='1' />
-                      <TableButton id='5' capacity='1' />
-                      <TableButton id='6' capacity='1' />
-                    </Grid>
-
-                    {/* Baris 2 */}
-                    <Grid container item justify='space-between' >
-                      <TableButton id='7' capacity='2' orientation='horizontal' />
-                      <TableButton id='8' capacity='2' orientation='horizontal' />
-                      <TableButton id='9' capacity='2' orientation='horizontal' />
-                      <TableButton id='10' capacity='2' orientation='horizontal' />
-                    </Grid>
-
-                    {/* Baris 3 */}
-                    <Grid container item justify='space-between' >
-                      <TableButton id='1' capacity='4' />
-                      <TableButton id='2' capacity='4' />
-                      <TableButton id='3' capacity='4' />
-                      <TableButton id='4' capacity='4' />
-                    </Grid>
-                  </Grid>
-
-                  {/* Bawah */}
-                  <Grid container item xs='12' justify='space-between' style={{ marginTop: '32px' }}>
-                    <TableButton id='5' capacity='4' />
-                    <TableButton id='6' capacity='4' />
-                    <TableButton id='7' capacity='4' />
-                    <TableButton id='8' capacity='4' />
-                    <TableButton id='9' capacity='4' />
-                    <TableButton id='10' capacity='4' />
-                  </Grid>
-                </Grid>
-
-                {/* Tombol-tombol */}
-                <Grid container item justify='space-between' style={{ margin: '24px 0 8px 0' }}>
-
-                  <Grid item>
-                    {(!selectedQueuer && isObjEmpty(selectedTables)) ? (
-                      <Button
-                        variant='contained'
-                        className={classes.themebg}
-                        onClick={handleSync}
-                      >
-                        Reload
-                      </Button>
-                    ) : (
-                        null
-                      )
-                    }
-                  </Grid>
-                  {(selectedQueuer) ? (
-                    <Grid item>
-                      <Button
-                        variant='contained'
-                        className={classes.themebg}
-                        style={{ marginRight: '16px' }}
-                        onClick={handleCancelClick}
-                      >
-                        Batal
-                      </Button>
-                      <Button
-                        variant='contained'
-                        className={classes.themebg}
-                        onClick={() => { handleConfirmClick(true) }}
-                      >
-                        Ubah
-                        </Button>
-                    </Grid>
-                  ) : (
-                      (!isObjEmpty(selectedTables)) ? (
-                        <Grid item>
-                          <Button
-                            variant='contained'
-                            className={classes.themebg}
-                            style={{ marginRight: '16px' }}
-                            onClick={handleCancelClick}
-                          >
-                            Batal
-                      </Button>
-                          <Button
-                            variant='contained'
-                            className={classes.themebg}
-                            onClick={() => { handleConfirmClick(false) }}
-                          >
-                            Ubah
-                        </Button>
-                        </Grid>
-                      ) : (
-                          null
-                        )
-                    )
-                  }
-                </Grid>
-              </Grid>
-            </Paper>
-          </Grid>
-
-          {/* Tambah Pengantri */}
-          <Grid container item>
-            <Paper>
-              <Grid container item justify='center'>
-                <Grid item xs='3' />
-
-                {/* Form */}
-                <Grid container item xs='6'>
-                  <Grid container item justify='center' style={{ margin: '8px 0 8px 0' }}>
-                    <Grid item >
-                      <Typography variant='h6'>Tambah Pengantri</Typography>
-                    </Grid>
-                  </Grid>
-
-                  <Grid container item justify='center' >
-                    <Grid item justify='center'>
-                      <TextField
-                        variant='outlined'
-                        label='Nama Perwakilan'
-                        size='small'
-                        value={valueNama}
-                        onChange={(e) => { setValueNama(e.target.value) }}
-                      />
-                    </Grid>
-                  </Grid>
-
-                  <Grid container item justify='center' >
-                    <Grid item>
-                      <TextField
-                        variant='outlined'
-                        label='Jumlah Orang'
-                        size='small'
-                        style={{ margin: '24px 0 16px 0' }}
-                        value={valueJumlah}
-                        onChange={(e) => { setValueJumlah(e.target.value) }}
-                      />
-                    </Grid>
-                  </Grid>
-                </Grid>
-
-                {/* Tombol submit */}
-                <Grid container item alignContent='flex-end' xs='3' style={{ margin: '0 0 16px 0' }}>
-                  <Grid item>
-                    <Button
-                      variant='contained'
-                      className={classes.themebg}
-                      onClick={() => { handleSubmit() }}
-                    >
-                      Tambah
-                      </Button>
-                  </Grid>
-                </Grid>
-              </Grid>
-            </Paper>
-          </Grid>
-        </Grid>
-      </Grid>
-    </Grid>
+          )
+      ) : (
+          null
+        )}
+    </div>
   );
 }
 
