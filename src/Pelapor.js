@@ -183,7 +183,7 @@ function Pelapor() {
   const role = React.useRef();
 
   React.useEffect(() => {
-    helper.checkAuth().then((response) => {
+    helper.getRole().then((response) => {
       if (response.data === 'pelapor') {
         helper.getAllTable().then((res) => {
           let capacityRange = new Set();

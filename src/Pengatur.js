@@ -178,13 +178,12 @@ function Pengatur() {
         disabled={disabled}
         classes={{ root: className, disabled: classes.disabled }}
         onClick={() => { handleTButtonClick() }}
-
       >
         {(selectedTables[tableCode]) ? (
           (tables[capacity][id]) ? (
             <RemoveIcon />
           ) : (
-              <CheckIcon />
+            <CheckIcon />
             )
         ) : (
             tableCode
@@ -199,7 +198,7 @@ function Pengatur() {
   const role = React.useRef();
 
   React.useEffect(() => {
-    helper.checkAuth().then((response) => {
+    helper.getRole().then((response) => {
       if (response.data === 'pengatur') {
         helper.getAllQueuer().then((res) => {
           setRows(res.data);

@@ -26,8 +26,8 @@ function setTablesStatus(data) {
 	return Axios.put(server + '/meja', data, getConfig());
 }
 
-function checkAuth() {
-	return Axios.get(server + '/auth', getConfig());
+function getRole() {
+	return Axios.get(server + '/peran', getConfig());
 }
 
 function getToken(code) {
@@ -39,7 +39,7 @@ function getGoogleLoginURL() {
 }
 
 function upsertUser(data) {
-	return Axios.post(server + '/karyawan', data, getConfig());
+	return Axios.post(server + '/karyawan', data);
 }
 
-export { createQueuer, getAllQueuer, deleteQueuer, getAllTable, setTablesStatus, checkAuth, getToken, getGoogleLoginURL, upsertUser };
+export { createQueuer, getAllQueuer, deleteQueuer, getAllTable, setTablesStatus, getRole, getToken, getGoogleLoginURL, upsertUser };

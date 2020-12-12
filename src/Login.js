@@ -37,7 +37,7 @@ function Login() {
     if (code) {
       helper.getToken(code).then((res) => {
         localStorage.setItem('access_token', res.data);
-        helper.checkAuth().then((response) => {
+        helper.getRole().then((response) => {
           if (response.data === 'pengatur') {
             window.location.replace('./pengatur');
           } else { // peran === 'pelapor'
@@ -52,7 +52,7 @@ function Login() {
         window.location.replace('./');
       });
     } else {
-      helper.checkAuth().then((response) => {
+      helper.getRole().then((response) => {
         setRole(response.data);
       }).catch((err) => {
         setRole(null);
@@ -81,7 +81,7 @@ function Login() {
       helper.upsertUser({ email: emailValue, peran: roleRadioValue }).then(() => {
         handleOpenSnackbar('success', `Akun dengan email ${emailValue} mendapat peran '${roleRadioValue}'`);
 
-        helper.checkAuth().then((response) => {
+        helper.getRole().then((response) => {
           setRole(response.data);
         }).catch((err) => {
           setRole(null);
@@ -215,10 +215,8 @@ function Login() {
               <Grid container item xs='12' wrap='nowrap' direction='column' alignItems='center' style={{ padding: '16px' }}>
                 <Grid item >
                   {/* Judul */}
-                  <Typography variant='h5' align='center'>Set Peran-Akun</Typography>
+                  <Typography variant='h5' align='center'>Registrasi Akun/Ganti Peran</Typography>
                   <Typography align='center' color='textSecondary' style={{ fontSize: '0.8em' }}>
-                    (Form ini ada agar penguji dapat mengakses halaman kedua peran <br />
-                    tanpa perlu mengubah isi basisdata secara langsung). <br />
                     Jika belum pernah ditambahkan, akun akan ditambahkan ke basisdata. <br />
                     Jika sudah pernah ditambahkan, peran akun di basisdata akan diperbarui.
                   </Typography>
