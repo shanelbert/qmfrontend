@@ -226,7 +226,7 @@ function Login() {
                 <Grid item style={{ marginTop: '24px' }}>
                   <TextField
                     variant='outlined'
-                    label='Email'
+                    label='Email Google'
                     size='small'
                     value={emailValue}
                     onChange={(e) => { handleChangeEmail(e) }}
