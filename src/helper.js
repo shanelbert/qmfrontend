@@ -1,6 +1,6 @@
 import Axios from 'axios';
 
-const server = 'http://localhost:5000';
+const server = process.env.REACT_APP_SERVER;
 
 function getConfig() {
 	return { headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` } };

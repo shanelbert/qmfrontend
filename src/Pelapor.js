@@ -9,13 +9,15 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Snackbar from '@material-ui/core/Snackbar';
 import Hidden from '@material-ui/core/Hidden';
-import Fab from '@material-ui/core/Fab';
+import SpeedDial from '@material-ui/lab/SpeedDial';
+import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
 
 import MuiAlert from '@material-ui/lab/Alert';
 
-import HomeIcon from '@material-ui/icons/Home';
 import RemoveIcon from '@material-ui/icons/Remove';
-
+import AddIcon from '@material-ui/icons/Add';
+import HomeIcon from '@material-ui/icons/Home';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 function Pelapor() {
   let base = 8;
@@ -66,13 +68,12 @@ function Pelapor() {
     disabled: {
       //(meskipun kosong, ini harus ditambahkan)
     },
-    fab: {
+    speeddial: {
       position: 'fixed',
       right: '3vw',
       bottom: '3vh',
       zIndex: 1
-    },
-    themebg: {
+    },    themebg: {
       backgroundColor: '#673ab7',
       color: 'white'
     }
@@ -226,10 +227,6 @@ function Pelapor() {
 
   function handleCloseSnackbar(event, reason) {
     if (reason === 'clickaway') {
-      // agar snackbar tidak langsung ditutup tepat setelah dibuka.
-      // tombol submit diklik -> membuka snackbar
-      // daerah di luar snackbar diklik -> menutup snackbar
-      // tombol submit adalah daerah di luar snackbar
       return;
     }
     setOpenSnackbar(false);
@@ -248,7 +245,27 @@ function Pelapor() {
     });
   }
 
+
+  const [openSpeedDial, setOpenSpeedDial] = React.useState(false);
+  const actions = [
+    { icon: <HomeIcon />, name: 'Beranda', handler: handleHome },
+    { icon: <ExitToAppIcon />, name: 'Logout', handler: handleLogout }
+  ];
+
+  function handleClose() {
+    setOpenSpeedDial(false);
+  };
+
+  function handleOpen() {
+    setOpenSpeedDial(true);
+  };
+
   function handleHome() {
+    window.location.replace('./');
+  };
+
+  function handleLogout() {
+    localStorage.removeItem('access_token');
     window.location.replace('./');
   };
 
@@ -259,9 +276,25 @@ function Pelapor() {
           <Forbidden role={role.current} />
         ) : (
           <Grid container justify='center' style={{ background: '#f5f5f5', padding: '16px 0 16px 0', minHeight: '100vh' }} >
-            <Fab size='medium' className={`${classes.fab} ${classes.themebg}`} onClick={handleHome}>
-              <HomeIcon />
-            </Fab>
+            <SpeedDial
+              ariaLabel='SpeedDial'
+              className={classes.speeddial}
+              icon={<AddIcon />}
+              onClose={handleClose}
+              onOpen={handleOpen}
+              open={openSpeedDial}
+              direction='up'
+              style={{ position: 'fixed' }}
+            >
+              {actions.map((action) => (
+                <SpeedDialAction
+                  key={action.name}
+                  icon={action.icon}
+                  tooltipTitle={action.name}
+                  onClick={action.handler}
+                />
+              ))}
+            </SpeedDial>
 
             <Snackbar
               open={openSnackbar}
@@ -374,14 +407,14 @@ function Pelapor() {
                         <Hidden smUp>
                           <Typography align='center' style={{ fontSize: '0.8em' }}>
                             Untuk mengubah status meja menjadi kosong, <br />
-                    klik tombol meja abu-abu (bisa lebih dari 1), lalu klik tombol ubah.
-                  </Typography >
+                            klik tombol meja abu-abu (bisa lebih dari 1), lalu klik tombol ubah.
+                          </Typography >
                         </Hidden>
                         <Hidden xsDown>
                           <Typography align='center'>
                             Untuk mengubah status meja menjadi kosong, <br />
-                    klik tombol meja abu-abu (bisa lebih dari 1), lalu klik tombol ubah.
-                  </Typography >
+                            klik tombol meja abu-abu (bisa lebih dari 1), lalu klik tombol ubah.
+                          </Typography >
                         </Hidden>
                       </Grid>
                     </Grid>

@@ -40,7 +40,7 @@ function Login() {
         helper.getRole().then((response) => {
           if (response.data === 'pengatur') {
             window.location.replace('./pengatur');
-          } else { // peran === 'pelapor'
+          } else {
             window.location.replace('./pelapor');
           }
         }).catch((err) => {
@@ -56,7 +56,7 @@ function Login() {
         setRole(response.data);
       }).catch((err) => {
         setRole(null);
-      })
+      });
 
       helper.getGoogleLoginURL().then((res) => {
         setURL(res.data);
@@ -104,10 +104,6 @@ function Login() {
 
   function handleCloseSnackbar(event, reason) {
     if (reason === 'clickaway') {
-      // agar snackbar tidak langsung ditutup tepat setelah dibuka.
-      // tombol submit diklik -> membuka snackbar
-      // daerah di luar snackbar diklik -> menutup snackbar
-      // tombol submit adalah daerah di luar snackbar
       return;
     }
     setOpenSnackbar(false);

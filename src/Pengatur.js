@@ -30,6 +30,7 @@ import RemoveIcon from '@material-ui/icons/Remove';
 import HelpIcon from '@material-ui/icons/Help';
 import AddIcon from '@material-ui/icons/Add';
 import HomeIcon from '@material-ui/icons/Home';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 function Pengatur() {
   let base = 8;
@@ -80,7 +81,7 @@ function Pengatur() {
     disabled: {
       //(meskipun kosong, ini harus ditambahkan)
     },
-    fab: {
+    speeddial: {
       position: 'fixed',
       right: '3vw',
       bottom: '3vh',
@@ -148,7 +149,6 @@ function Pengatur() {
     }
 
     let disabled = true;
-    // jika baris diklik dan meja ini sedang kosong
     if (selectedQueuer) {
       if (!isObjEmpty(tables) && !tables[capacity][id]) {
         disabled = false;
@@ -245,10 +245,6 @@ function Pengatur() {
 
   function handleCloseSnackbar(event, reason) {
     if (reason === 'clickaway') {
-      // agar snackbar tidak langsung ditutup tepat setelah dibuka.
-      // tombol submit diklik -> membuka snackbar
-      // daerah di luar snackbar diklik -> menutup snackbar
-      // tombol submit adalah daerah di luar snackbar
       return;
     }
     setOpenSnackbar(false);
@@ -396,7 +392,8 @@ function Pengatur() {
   const [openSpeedDial, setOpenSpeedDial] = React.useState(false);
   const actions = [
     { icon: <HelpIcon />, name: 'Bantuan', handler: handleOpenDialog },
-    { icon: <HomeIcon />, name: 'Beranda', handler: handleHome }
+    { icon: <HomeIcon />, name: 'Beranda', handler: handleHome },
+    { icon: <ExitToAppIcon />, name: 'Logout', handler: handleLogout }
   ];
 
   function handleClose() {
@@ -411,6 +408,10 @@ function Pengatur() {
     window.location.replace('./');
   };
 
+  function handleLogout() {
+    localStorage.removeItem('access_token');
+    window.location.replace('./');
+  };
 
   return (
     <div>
@@ -428,7 +429,7 @@ function Pengatur() {
 
               <SpeedDial
                 ariaLabel='SpeedDial'
-                className={classes.fab}
+                className={classes.speeddial}
                 icon={<AddIcon />}
                 onClose={handleClose}
                 onOpen={handleOpen}
